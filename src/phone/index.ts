@@ -34,7 +34,7 @@ export interface PhoneInfo {
 function toLibCountry(code: CountryCodeInput | undefined): LibCountryCode | undefined {
   if (typeof code !== 'string') return undefined;
   const upper = code.trim().toUpperCase();
-  return isSupportedCountry(upper) ? (upper as LibCountryCode) : undefined;
+  return isSupportedCountry(upper) ? upper : undefined;
 }
 
 function parse(phone: string, country?: CountryCodeInput): PhoneNumber | undefined {

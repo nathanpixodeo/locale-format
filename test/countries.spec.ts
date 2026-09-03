@@ -61,7 +61,7 @@ describe('bundled country data', () => {
       const declared = new Set(spec.addressFields.map((field) => field.name));
       const templates = [...spec.addressFormat, ...(spec.addressFormatLatin ?? [])];
       for (const token of templates.join(' ').matchAll(/\{([A-Za-z0-9_]+)\}/g)) {
-        expect(declared, `${code} template references {${token[1]}}`).toContain(token[1]);
+        expect(declared, `${code} template references ${token[0]}`).toContain(token[1]);
       }
 
       // Field order must be unique so forms render deterministically.
@@ -69,10 +69,11 @@ describe('bundled country data', () => {
       expect(new Set(orders).size).toBe(orders.length);
 
       if (spec.postalCode) {
-        expect(() => new RegExp(spec.postalCode!.pattern)).not.toThrow();
-        expect(validatePostalCodeWith(spec, spec.postalCode.example)).toBe(true);
+        const { pattern, example } = spec.postalCode;
+        expect(() => new RegExp(pattern)).not.toThrow();
+        expect(validatePostalCodeWith(spec, example)).toBe(true);
         const postalField = spec.addressFields.find((field) => field.name === 'postalCode');
-        expect(postalField?.pattern).toBe(spec.postalCode.pattern);
+        expect(postalField?.pattern).toBe(pattern);
       }
     },
   );

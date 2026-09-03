@@ -48,8 +48,6 @@ function resolveLocale(
 
 function toIntlOptions(options: DateTimeFormatOptions): Intl.DateTimeFormatOptions {
   const { country, locale, ...intl } = options;
-  void country;
-  void locale;
   return intl;
 }
 

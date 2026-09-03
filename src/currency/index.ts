@@ -27,8 +27,6 @@ function resolveLocale(
 
 function toIntlOptions(options: NumberFormatOptions): Intl.NumberFormatOptions {
   const { country, locale, ...intl } = options;
-  void country;
-  void locale;
   return intl;
 }
 

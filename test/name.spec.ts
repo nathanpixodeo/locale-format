@@ -43,7 +43,7 @@ describe('formatName', () => {
     expect(formatName({ given: 'Taro', family: 'Tanaka' }, { country: 'JP' })).toBe('Tanaka Taro');
     expect(formatName({ given: '  ', family: 'Tanaka' })).toBe('Tanaka');
     expect(formatName({ given: 'Taro', middle: null, family: undefined })).toBe('Taro');
-    expect(formatName({} as never)).toBe('');
+    expect(formatName({})).toBe('');
     expect(formatName(undefined as never)).toBe('');
   });
 });
