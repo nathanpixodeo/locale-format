@@ -4,6 +4,22 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Repository only. Nothing in the published package changes.
+
+### Changed
+
+- **The Node 18 promise is now checked against the published artifact instead of the source tree.**
+  `engines.node` still says 18.17.0 and still means it, but the development toolchain has outgrown
+  that floor: vitest depends on rolldown, which imports `styleText` from `node:util`, added in Node
+  20.12. Running the test suite on 18 is no longer possible, and it was never the thing that
+  mattered. CI's `verify` matrix is now 20, 22 and 24, and a new `node18-artifact` job builds and
+  packs on Node 22, installs that tarball on exactly 18.17.0, and runs `scripts/smoke.mjs` against
+  it. The replacement is stricter than what it replaces: it exercises the exports map, both module
+  formats and the lazy-loading chunks as a consumer resolves them, none of which running vitest over
+  `src` ever touched.
+
 ## [0.1.1] - 2026-09-03
 
 Repository, tooling and documentation only. No change to the public API, and no country's output

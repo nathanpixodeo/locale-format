@@ -22,8 +22,13 @@ and read `package.json` if you need to know exactly what it covers today.
 While iterating, the pieces are available individually: `npm run typecheck`, `npm test`,
 `npm run test:watch`, `npm run test:coverage`, `npm run build` and `npm run check-size`.
 
-Node 18.17 or newer, matching `engines.node`. CI runs the same checks across a matrix of Node
-majors, so a change that only works on your local version fails there.
+Develop on Node 20 or newer. `engines.node` says 18.17, and that is a real promise to consumers, but
+it applies to the published package rather than to the toolchain — vitest needs Node 20.12 for
+`styleText`, so the test suite cannot run on 18 at all. CI covers both halves: `verify` runs the full
+chain on Node 20, 22 and 24, and `node18-artifact` builds and packs on Node 22, then installs that
+tarball on exactly 18.17.0 and runs `scripts/smoke.mjs` against it. That smoke test is what keeps the
+floor honest, so a change to the exports map, to either module format, or to the lazy-loading chunks
+should be reflected there — nothing else exercises the published artifact as a consumer would.
 
 ## Changing country data
 

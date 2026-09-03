@@ -37,8 +37,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 18 is the floor declared in `engines`; the rest are current releases.
-        node: ['18', '20', '22', '24']
+        # Every Node version the development toolchain runs on. The floor
+        # declared in `engines` is older than this and is covered by
+        # `node18-artifact` below.
+        node: ['20', '22', '24']
 
     steps:
       - uses: actions/checkout@v4
@@ -64,3 +66,47 @@ jobs:
 
       - name: Inspect the publish tarball
         run: npm pack --dry-run
+
+  # `engines.node` promises 18.17.0, but the development toolchain no longer runs
+  # there: vitest depends on rolldown, which imports `styleText` from `node:util`,
+  # added in Node 20.12. That promise is about the artifact consumers install, not
+  # about the test runner, so it is checked the way a consumer would check it —
+  # build and pack on a current Node, then install the tarball on the exact
+  # version named in `engines` and run it. This covers the published exports map,
+  # both module formats and the lazy-loading chunks, which running the source
+  # suite on Node 18 never did.
+  node18-artifact:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build and pack
+        run: |
+          npm run build
+          npm pack --pack-destination "${RUNNER_TEMP}"
+
+      - name: Switch to the oldest supported Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17.0'
+
+      - name: Install the tarball and exercise it
+        run: |
+          version="$(node -p "require('${GITHUB_WORKSPACE}/package.json').version")"
+          mkdir -p "${RUNNER_TEMP}/smoke"
+          cd "${RUNNER_TEMP}/smoke"
+          npm init -y > /dev/null
+          npm install "${RUNNER_TEMP}/nexkit-locale-format-${version}.tgz"
+          # smoke.mjs has to sit beside the node_modules it is testing: Node
+          # resolves a bare specifier from the importing file's directory, so a
+          # copy run from the checkout would resolve back to the source tree.
+          cp "${GITHUB_WORKSPACE}/scripts/smoke.mjs" .
+          node smoke.mjs "${version}"
