@@ -12,10 +12,7 @@ concurrency:
 
 jobs:
   # Linting is a static check: its result cannot vary with the Node version, so
-  # running it once is enough. It also has to run separately, because ESLint 10
-  # requires Node >= 20.19 while this package supports Node 18 — linting inside
-  # the matrix would fail the Node 18 row for a reason that says nothing about
-  # whether the package works on Node 18.
+  # running it once is enough rather than once per matrix row.
   lint:
     runs-on: ubuntu-latest
 

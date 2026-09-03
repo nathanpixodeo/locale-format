@@ -19,6 +19,8 @@ Repository only. Nothing in the published package changes.
   it. The replacement is stricter than what it replaces: it exercises the exports map, both module
   formats and the lazy-loading chunks as a consumer resolves them, none of which running vitest over
   `src` ever touched.
+- Development dependencies: vitest and `@vitest/coverage-v8` 3 to 4, `@types/node` 22 to 26. The CI
+  actions `actions/checkout` and `actions/setup-node` move from v4 to v7.
 
 ## [0.1.1] - 2026-09-03
 
