@@ -2,7 +2,7 @@ const TOKEN = /\{([A-Za-z0-9_]+)\}/g;
 const OPTIONAL_GROUP = /\[([^\]]*)\]/g;
 
 /** Horizontal whitespace, including the non-breaking space. */
-const HORIZONTAL_SPACE = /[ \t ]+/g;
+const HORIZONTAL_SPACE = /[ \t\u00a0]+/g;
 
 /** Characters that are meaningless at a line boundary once fields drop out. */
 const EDGE = /^[\s,;、\-/]+|[\s,;、\-/]+$/g;
