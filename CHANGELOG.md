@@ -4,6 +4,41 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Repository, tooling and documentation only. No change to the public API, and no country's output
+moves.
+
+### Added
+
+- **Linting** — ESLint with a flat, type-aware config over `typescript-eslint`, run in CI beside the
+  typecheck, the tests, the build and the size budgets, so a lint failure blocks a merge like any
+  other check.
+- **Node 18 in the CI matrix** — `engines.node` claims 18.17, so the floor is now tested rather than
+  assumed. The matrix is 18, 20, 22 and 24.
+- **Dependabot** — weekly npm and GitHub Actions updates. Development dependencies are grouped into
+  one pull request; `libphonenumber-js` is always reviewed on its own, because its phone-numbering
+  metadata is what validation depends on.
+- **Release workflow** — publishes from a `v*` tag with `npm publish --provenance`, after running
+  `npm run verify` and refusing to publish when the tag and `package.json` disagree on the version.
+- **Issue and pull request templates** — including a dedicated country-data form that asks for the
+  authoritative source up front.
+- **`CONTRIBUTING.md`** — setup, the rule that a country-data change must cite the national postal
+  operator or a government page, snapshot discipline, the size budgets, the ICU-dependence trap in
+  tests, and the commit convention.
+- **`SECURITY.md`** — the actual threat model (no network, no filesystem, no `eval`, one runtime
+  dependency, total functions), ReDoS in postal patterns as the one class of issue worth reporting,
+  and how to report privately.
+- Version, CI and licence badges in `README.md`.
+
+### Changed
+
+- `README.md` records under "Known limitations" that `getAddressFields` returns English labels only,
+  and that the way to translate them is to map each field's stable `name` to your own catalogue.
+  This was already noted in `docs/adding-a-country.md`, but not where callers look for it.
+- `docs/spec-traceability.md` restates NFR-8 against the documentation now in the repository. It
+  stays Partial: there is still no Storybook and no hosted playground.
+
 ## [0.1.0] - 2026-09-03
 
 First release. Implements the MVP scope of the locale-format SRS 0.1, plus the Phase 2 modules.
@@ -37,4 +72,5 @@ First release. Implements the MVP scope of the locale-format SRS 0.1, plus the P
 - The SRS illustrates a single `addressLine` field; this release ships `addressLine1` and
   `addressLine2`, with `street` as an alias of `addressLine1`.
 
+[Unreleased]: https://github.com/nathanpixodeo/locale-format/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/nathanpixodeo/locale-format/releases/tag/v0.1.0

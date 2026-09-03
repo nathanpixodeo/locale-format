@@ -1,5 +1,9 @@
 # @nexkit/locale-format
 
+[![npm](https://img.shields.io/npm/v/@nexkit/locale-format.svg)](https://www.npmjs.com/package/@nexkit/locale-format)
+[![CI](https://github.com/nathanpixodeo/locale-format/actions/workflows/ci.yml/badge.svg)](https://github.com/nathanpixodeo/locale-format/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Country-aware display formatting for addresses, phone numbers, currency, dates and personal names.
 
 Every project that opens a new market re-implements the same rules: Japan writes the postal code
@@ -276,6 +280,12 @@ No function in this package throws. The contract is:
 - **Transliteration is line reordering only.** `script: 'latin'` switches to the Latin line order
   for CN, JP, KR and TW. It does not convert Kanji or Hanzi to Romaji or Pinyin — the field values
   are printed as given. Store Latin values in the fields if you need Latin output.
+- **Address field labels are English only.** `getAddressFields` returns the label text stored in the
+  country data — English, apart from the local administrative term where that is the usual name,
+  such as Indonesia's `Kelurahan` — and nothing here translates it. Map each field's `name` to your
+  own translation catalogue and treat `label` as a development fallback: `name` comes from the fixed
+  identifier list above and is the same in every country, which is what makes it a safe key, whereas
+  label text is display copy and may be reworded.
 - **Field names differ slightly from the SRS.** The specification's example shows a single
   `addressLine`; this package ships `addressLine1` and `addressLine2` because several countries need
   both. `street` remains as an alias of `addressLine1`.
@@ -304,6 +314,10 @@ npm run build         # tsup, ESM + CJS + .d.ts
 npm run check-size    # gzip budgets
 npm run verify        # all of the above, also run before publish
 ```
+
+[`CONTRIBUTING.md`](CONTRIBUTING.md) covers the rest: the sources a country-data change has to cite,
+snapshot discipline, the size budgets and the commit convention.
+[`SECURITY.md`](SECURITY.md) covers what to do with a suspected vulnerability.
 
 ## License
 

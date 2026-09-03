@@ -31,7 +31,7 @@ Maps every requirement in locale-format SRS 0.1 to what shipped in 0.1.0.
 | NFR-5 | At least 20 countries, with a fallback for the rest | Done | 22 countries plus `genericCountrySpec`; `registry.resolve` returns the generic schema carrying the requested code |
 | NFR-6 | Locale data versioned independently of core logic | Partial | Data is isolated in `src/data/` behind its own subpath exports and has no dependency on the formatting modules, so it can be extracted into a separately versioned package without an API break. It is not yet a separate npm package — see below. |
 | NFR-7 | Coverage at or above 90%, snapshot tests per country | Done | `vitest.config.ts` enforces 90% on lines, functions, branches and statements; `test/countries.spec.ts` snapshots all 22 countries' rendered addresses and form schemas |
-| NFR-8 | Documentation and a visual playground | Partial | `README.md`, `docs/`, a Node example and a React example. No Storybook or hosted playground in 0.1.0. |
+| NFR-8 | Documentation and a visual playground | Partial | The documentation half is met: `README.md` carries the API reference, the bad-input contract and the known limitations; `adding-a-country.md` covers extending the country table; this file maps the SRS; `CONTRIBUTING.md` and `SECURITY.md` were added after 0.1.0; `examples/node` and `examples/react` are runnable. The playground half is not met — there is no Storybook and no hosted playground — so this stays Partial. |
 
 ## Deviations
 
