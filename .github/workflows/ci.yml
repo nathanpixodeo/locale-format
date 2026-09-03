@@ -11,12 +11,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Linting is a static check: its result cannot vary with the Node version, so
+  # running it once is enough. It also has to run separately, because ESLint 10
+  # requires Node >= 20.19 while this package supports Node 18 — linting inside
+  # the matrix would fail the Node 18 row for a reason that says nothing about
+  # whether the package works on Node 18.
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
   verify:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        node: ['20', '22', '24']
+        # 18 is the floor declared in `engines`; the rest are current releases.
+        node: ['18', '20', '22', '24']
 
     steps:
       - uses: actions/checkout@v4

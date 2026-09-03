@@ -1,0 +1,38 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    # This repository uses Conventional Commits; dependency bumps are `chore`.
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    # The package is a library: only widen the declared range when a release
+    # actually falls outside it, so consumers are not forced onto a newer floor.
+    # The committed lockfile still gets bumped, so in-range releases are reviewed.
+    versioning-strategy: increase-if-necessary
+    groups:
+      dev-dependencies:
+        dependency-type: development
+        patterns:
+          - '*'
+        exclude-patterns:
+          # libphonenumber-js ships the phone-numbering metadata. Stale metadata
+          # silently degrades validation, so it is reviewed as a standalone PR
+          # even if it is ever reclassified as a development dependency.
+          - libphonenumber-js
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: chore
+      include: scope

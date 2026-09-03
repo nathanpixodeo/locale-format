@@ -1,0 +1,117 @@
+name: Bug report
+description: Report incorrect behaviour, a crash, or wrong formatting output.
+title: 'bug: '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        For a wrong or missing country value (address layout, postal code
+        pattern, calling code, currency or name order), please use the
+        **Country data correction** form instead.
+
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      description: The installed version of `@nexkit/locale-format`.
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+      description: Output of `node --version`. Leave blank if the bug only reproduces in a browser.
+      placeholder: v22.11.0
+    validations:
+      required: false
+
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime
+      description: Where the code ran when you saw the bug.
+      options:
+        - Node.js
+        - Browser
+        - Bundler output (Vite, webpack, Rollup, esbuild)
+        - Edge runtime (Cloudflare Workers, Vercel Edge, Deno)
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: country
+    attributes:
+      label: Country code
+      description: The ISO 3166-1 alpha-2 code involved, if the bug is country-specific.
+      placeholder: LU
+    validations:
+      required: false
+
+  - type: input
+    id: icu-build
+    attributes:
+      label: Which exact build produced the output?
+      description: >-
+        Formatting comes from the runtime's own Intl/ICU data, so identical input
+        produces different output on different builds. Name the precise one — an
+        official nodejs.org binary, a distro or Homebrew package, an Alpine/musl
+        or `node:22-slim` image, or the browser and its version.
+      placeholder: 'Official nodejs.org 22.11.0 linux-x64 binary'
+    validations:
+      required: true
+
+  - type: textarea
+    id: icu-data
+    attributes:
+      label: Intl and ICU diagnostics
+      description: >-
+        Paste the output of `node -p "JSON.stringify({ node: process.version, icu:
+        process.versions.icu, unicode: process.versions.unicode, resolved:
+        Intl.DateTimeFormat().resolvedOptions() })"`, or in a browser the result
+        of `Intl.DateTimeFormat().resolvedOptions()`.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: The smallest self-contained snippet that shows the problem.
+      render: typescript
+      placeholder: |
+        import { formatAddress } from '@nexkit/locale-format';
+
+        console.log(formatAddress({ /* ... */ }, 'LU'));
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected output
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual output
+      description: Paste the exact output, including any error message and stack trace.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that helps — bundler config, TypeScript version, a link to a failing repository.
+    validations:
+      required: false

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or usage help
+    url: https://github.com/nathanpixodeo/locale-format/discussions
+    about: Ask how to use the package, or discuss an idea before opening an issue.
+  - name: Documentation
+    url: https://github.com/nathanpixodeo/locale-format#readme
+    about: API reference, supported countries, and the country data model.
+  - name: Report a security vulnerability
+    url: https://github.com/nathanpixodeo/locale-format/security/advisories/new
+    about: Disclose privately. Do not open a public issue for security problems.

@@ -1,0 +1,68 @@
+# One-time setup required by the repository owner before this workflow can run:
+#
+#   1. Create a granular npm access token (npmjs.com -> Access Tokens -> Generate
+#      New Token -> Granular Access Token) with "Read and write" permission
+#      scoped to the @nexkit/locale-format package only.
+#   2. Store it as the repository secret NPM_TOKEN
+#      (Settings -> Secrets and variables -> Actions -> New repository secret).
+#
+# A granular token is required because the npm account's 2FA mode is
+# `auth-and-writes`: that mode demands a one-time password for every write, which
+# a non-interactive CI publish cannot supply. A granular access token carries its
+# own authorisation and bypasses the interactive OTP prompt. Classic "automation"
+# tokens also work, but granular tokens are scoped to this single package and
+# expire, so they are the safer choice.
+#
+# Releasing: bump `version` in package.json, commit, then push a matching tag
+# (`git tag v1.2.3 && git push origin v1.2.3`). The job refuses to publish if the
+# tag and the manifest disagree.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # Required for the OIDC token that npm exchanges for a provenance attestation.
+  id-token: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify the tag matches package.json
+        if: github.ref_type == 'tag'
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          pkg_version="$(node -p "require('./package.json').version")"
+          if [ "$tag_version" != "$pkg_version" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} implies version ${tag_version}, but package.json declares ${pkg_version}. Update the version field or delete and re-push the tag."
+            exit 1
+          fi
+          echo "Publishing version ${pkg_version} from tag ${GITHUB_REF_NAME}."
+
+      - run: npm ci
+
+      - name: Verify
+        run: npm run verify
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

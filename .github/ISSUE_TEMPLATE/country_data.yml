@@ -1,0 +1,86 @@
+name: Country data correction
+description: Report a wrong or missing per-country address, postal code, calling code, currency or name-order value.
+title: 'data: '
+labels:
+  - country-data
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Country data is only as good as its sources. Every correction needs a
+        link to an authoritative reference — a national postal operator, a
+        government or central bank page, an ITU or ISO publication — so the
+        change can be verified without re-litigating it later.
+
+  - type: input
+    id: country
+    attributes:
+      label: Country
+      description: ISO 3166-1 alpha-2 code, plus the country name.
+      placeholder: LU (Luxembourg)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: field
+    attributes:
+      label: Which field is wrong or missing?
+      options:
+        - Address format (line order, required fields, labels)
+        - Postal code (pattern, presence, or formatting)
+        - Calling code / phone
+        - Currency (code, symbol, or decimal digits)
+        - Name order (given/family ordering, honorifics)
+        - Country name or other metadata
+        - The country is missing entirely
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current value
+      description: What the package returns today. Leave blank if the data is missing entirely.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: correct
+    attributes:
+      label: Correct value
+      description: What it should be, in as much detail as you can give (exact layout, exact regex, exact code).
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Authoritative source
+      description: >-
+        A link to the postal operator, government body, central bank, ITU or ISO
+        page that establishes the correct value. Blog posts and Wikipedia are not
+        sufficient on their own.
+      placeholder: https://www.upu.int/en/Postal-Solutions/Programmes-Services/Addressing-Solutions
+    validations:
+      required: true
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Real examples
+      description: >-
+        One or two real, publicly published addresses, numbers or amounts that
+        demonstrate the correct form. Please do not include anyone's private data.
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Regional exceptions, transition dates, or anything that makes the rule conditional.
+    validations:
+      required: false
