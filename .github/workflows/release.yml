@@ -1,17 +1,23 @@
-# One-time setup required by the repository owner before this workflow can run:
+# One-time setup, required before this workflow can publish. Either option works
+# and this file supports both; trusted publishing is preferred.
 #
-#   1. Create a granular npm access token (npmjs.com -> Access Tokens -> Generate
-#      New Token -> Granular Access Token) with "Read and write" permission
-#      scoped to the @nexkit/locale-format package only.
-#   2. Store it as the repository secret NPM_TOKEN
-#      (Settings -> Secrets and variables -> Actions -> New repository secret).
+# Option A - trusted publishing (no credential at all, recommended):
+#   npmjs.com -> the @nexkit/locale-format package -> Settings -> Trusted
+#   Publisher -> GitHub Actions, with organisation `nathanpixodeo`, repository
+#   `locale-format`, workflow `release.yml`. npm then exchanges this job's OIDC
+#   token for short-lived publish rights. Nothing is stored in the repository,
+#   so there is no secret to leak, rotate or expire.
 #
-# A granular token is required because the npm account's 2FA mode is
-# `auth-and-writes`: that mode demands a one-time password for every write, which
-# a non-interactive CI publish cannot supply. A granular access token carries its
-# own authorisation and bypasses the interactive OTP prompt. Classic "automation"
-# tokens also work, but granular tokens are scoped to this single package and
-# expire, so they are the safer choice.
+# Option B - a stored token (fallback):
+#   npmjs.com -> Access Tokens -> Generate New Token -> Granular Access Token,
+#   "Read and write" scoped to @nexkit/locale-format only. Store it as the
+#   repository secret NPM_TOKEN (Settings -> Secrets and variables -> Actions).
+#
+# Why either is needed: the npm account's 2FA mode is `auth-and-writes`, which
+# demands a one-time password for every write. A non-interactive CI publish
+# cannot supply one, so it needs either OIDC or a token that carries its own
+# authorisation. npm is progressively restricting tokens that bypass 2FA, which
+# is the other reason to prefer option A.
 #
 # Releasing: bump `version` in package.json, commit, then push a matching tag
 # (`git tag v1.2.3 && git push origin v1.2.3`). The job refuses to publish if the
@@ -57,11 +63,20 @@ jobs:
           fi
           echo "Publishing version ${pkg_version} from tag ${GITHUB_REF_NAME}."
 
+      # Trusted publishing needs npm 11.5.1 or newer, which is ahead of the npm
+      # bundled with any current Node release. Harmless when publishing with a
+      # token instead.
+      - name: Use an npm that supports trusted publishing
+        run: npm install -g npm@latest
+
       - run: npm ci
 
       - name: Verify
         run: npm run verify
 
+      # NODE_AUTH_TOKEN is ignored when a trusted publisher is configured, and
+      # is what authorises the publish when one is not. Leaving it set means the
+      # workflow works under either setup.
       - name: Publish to npm
         run: npm publish --provenance --access public
         env:
