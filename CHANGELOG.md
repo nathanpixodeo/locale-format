@@ -4,16 +4,31 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.1] - 2026-09-03
 
 Repository, tooling and documentation only. No change to the public API, and no country's output
 moves.
 
+### Fixed
+
+- **A raw U+0000 byte in `src/core/intl-cache.ts`.** The cache key joined its two halves with a NUL
+  character typed straight into the template literal. One NUL in a file's first 8000 bytes makes Git
+  classify it as binary, which `* text=auto` does not override, so the file had no reviewable diff,
+  was skipped by `git grep`, and could not be merged textually. Published bundles were never
+  affected — esbuild escaped the byte on the way into `dist` — so nothing changes for callers. Both
+  this and an unescaped U+00A0 in `src/core/template.ts` are now written as escapes, leaving the
+  emitted code and the runtime cache key byte-for-byte identical.
+- Eight further findings from the new lint pass, none of them behavioural: a redundant assertion on
+  a type guard, two pairs of dead `void` statements, an unnecessary assertion in a test, a template
+  expression that could interpolate `undefined`, and two non-null assertions replaced by
+  destructuring.
+
 ### Added
 
-- **Linting** — ESLint with a flat, type-aware config over `typescript-eslint`, run in CI beside the
-  typecheck, the tests, the build and the size budgets, so a lint failure blocks a merge like any
-  other check.
+- **Linting** — ESLint with a flat, type-aware config over `typescript-eslint`, wired into
+  `npm run verify` so the same gate covers local runs, CI and `prepublishOnly`. CI lints in its own
+  job: the result cannot vary by Node version, and ESLint requires a newer Node than this package's
+  own floor.
 - **Node 18 in the CI matrix** — `engines.node` claims 18.17, so the floor is now tested rather than
   assumed. The matrix is 18, 20, 22 and 24.
 - **Dependabot** — weekly npm and GitHub Actions updates. Development dependencies are grouped into
@@ -72,5 +87,6 @@ First release. Implements the MVP scope of the locale-format SRS 0.1, plus the P
 - The SRS illustrates a single `addressLine` field; this release ships `addressLine1` and
   `addressLine2`, with `street` as an alias of `addressLine1`.
 
-[Unreleased]: https://github.com/nathanpixodeo/locale-format/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/nathanpixodeo/locale-format/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/nathanpixodeo/locale-format/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/nathanpixodeo/locale-format/releases/tag/v0.1.0
