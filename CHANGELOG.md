@@ -6,7 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-Repository only. Nothing in the published package changes.
+## [0.1.2] - 2026-09-16
+
+### Added
+
+- PayPal funding metadata and a README support link.
 
 ### Changed
 

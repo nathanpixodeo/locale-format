@@ -319,6 +319,10 @@ npm run verify        # all of the above, also run before publish
 snapshot discipline, the size budgets and the commit convention.
 [`SECURITY.md`](SECURITY.md) covers what to do with a suspected vulnerability.
 
+## Support development
+
+If this package helps you, you can [buy me a beer](https://paypal.me/shivakira95).
+
 ## License
 
 MIT © Nathan Pixodeo

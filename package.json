@@ -1,6 +1,6 @@
 {
   "name": "@nexkit/locale-format",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Country-aware formatting and parsing for addresses, phone numbers, currency, date/time and personal names. Thin, typed wrappers over Intl and libphonenumber-js.",
   "keywords": [
     "locale",
@@ -25,6 +25,10 @@
   },
   "bugs": {
     "url": "https://github.com/nathanpixodeo/locale-format/issues"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://paypal.me/shivakira95"
   },
   "type": "module",
   "sideEffects": false,
